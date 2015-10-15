@@ -1,0 +1,5 @@
+---
+name: barricade
+dependencies: []
+files:
+- barricade/*.deb

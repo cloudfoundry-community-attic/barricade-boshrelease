@@ -9,29 +9,19 @@ update:
   serial: false
 
 jobs:
-  - name: barricade_leader_z1
-    templates:
-    - name: barricade
-      release: barricade
-    instances: 0
-    resource_pool: small_z1
-    networks: (( merge ))
-    persistent_disk: 0
-    properties: {}
   - name: barricade_z1
     templates:
     - name: barricade
       release: barricade
-    instances: 0
+    instances: 1
     resource_pool: small_z1
-    networks: (( merge ))
-    persistent_disk: 0
-    update:
-      canaries: 10
+    networks:
+      - name: barricade1
+        static_ips: (( static_ips(0) ))
     properties:
       barricade:
-        leader_address: (( merge ))
+        key: (( grab meta.barricade.key ))
 
-networks: (( merge ))
+networks: (( params "please set networks" ))
 
 properties: {}

@@ -1,0 +1,151 @@
+[barricade]
+#
+# Barricade Network and Application Monitoring configuration file.
+#
+# Lines that beging with a # are comment lines and are ignored by the
+# network monitor. Any command line option overrides these configurations.
+#
+# Parameter: license_key
+# Value:     A 40-character hexadecimal string provided by Barricade.io. This
+#            parameter is required for all transactions and in order for the
+#            security monitor to start.
+#
+license_key=<%= properties.barricade.key %>
+
+#
+# Parameter: tag
+# Value:     An arbitrary scalar value that will be used by you and your
+#            team to effectively "tag" results sent to the Barricade platform.
+#
+#            This can be used to tag "development, staging, production" environments,
+#            "commit" versions, it could be dates, etc.
+# Default:   production
+# Docs:      https://docs.barricade.io/help_center/platform/tags
+tag=<%= name %>/<%= index %>
+
+#
+# Parameter: protocols
+# Value:     A list of protocols to intercept. In the event where a protocol
+#            needs to be removed or added, it can be done here.
+# Default:   Ethernet,IP,IPv6,DNS,UDP,TCP,ICMP,ICMPv6,IGMP,ARP,HTTP,Raw
+# Note:      The engine will gracefully handle and learn from any existing
+#            protocol information sent to it.
+#
+# protocols=Ethernet,IP,IPv6,DNS,UDP,TCP,ICMP,ICMPv6,IGMP,ARP,HTTP,Raw
+
+#
+# Parameter: filter
+# Value:     The default network filter which is compatible with libpcap's
+#            format (i.e. "port not 53 and port not 22" to stop listening for
+#            DNS and SSH requests.
+# Warning:   Stopping the collection of services means that attacks on said services
+#            will not be detected.
+#
+#
+# filter=port not 22
+
+#
+# Parameter: collector_host
+# Value:     The domain name of the Barricade collector hostname to connect to. Changing
+#            this value, unless advised by a member of Barricade is likely to result in a
+#            loss of data if the hostname is not properly configured.
+# Default:   collector.barricade.io
+#
+collector_host=collector.barricade.io
+
+#
+# Parameter: collector_port
+# Value:     The port to use on the collector. Should you wish to play with a mock
+#            server to see what's going to the Barricade services, you can develop
+#            a simple webserver and specify the port here.
+# Default:   80
+# collector_port=80
+#
+# Or if you are using 0mq:
+#
+# Collector port:
+# collector_port=443
+
+#
+# Parameter: loglevel
+# Value:     The level of logging information about the agent to store.
+#            The possible values are broken down as follow:
+#                error        -> Show errors only
+#                warning      -> Show errors and warnings
+#                info         -> Show additional information messages
+#                verbose      -> Show detailed information messages
+#                debug        -> Show agent-debug messages
+#                verbosedebug -> Show very detailed agent-level debug messages
+# Default:   error
+#
+# loglevel=error
+
+#
+# Parameter: ssl
+# Value:     This indicates whether or not we want to attempt to
+#            to decrypt the SSl encrypted data before sending it
+#            to the collector.
+# Default:   false
+# Note:      This is useful if you are interested in further preventing
+#            attacks that happen over HTTPs (https://...)
+#
+# ssl=yes
+
+#
+# Parameter: ssl_ca_bundle
+# Value:     This contains the name of the PEM-encoded certificate-authority (CA)
+#            bundle to use for SSL connection protection. The agent will attempt
+#            to find the SSL certificate on its own by looking into the most common
+#            location where one usually finds it.
+# Default:   /etc/ssl/certs/ca-certificates.crt
+#
+# ssl_ca_bundle=/etc/barricade/collector.crt
+
+#
+# Parameter: ssl_ca_path
+# Value:    If your SSL configuration does not use CA bundles but has a directory
+#           containing multiple PEM-encoded Certificate Authority files, configure
+#           this option to point to the directory with the CA files.
+# Default:  /etc/ssl/certs
+#
+#ssl_ca_path=/etc/ssl/certs
+
+#
+# Parameter: flush_frequency
+# Value:     How often (in seconds) events should be send to the collector.
+#            Events are batched together to make the traffic output more uniformly
+#            distributed for varying ingress. The more frequently data is flushed,
+#            the more up to date a picture of your network Barricade has.
+# Default:   1
+# flush_frequency=1
+
+#
+# Parameter: concurrency
+# Value:     The number of worker processes to spawn for sending data to the collector.
+#            This should be tuned with the `flush_frequency` option as each worker will
+#            update concurrently. So a concurrency of 10 and a flush_frequency of 1 will
+#            mean 10 updates per second in total to the collector.
+# Default:   1
+#
+# concurrency=1
+
+#
+# Parameter: id_path
+# Value:     The path to the server id file. This contains a unique identifier for the agent on
+#            a particular server. Normally, this is autogenerated.
+# Default:   /etc/barricade/id
+#
+id_path=/var/vcap/store/barricade/id
+
+#
+# Parameter: high_water_mark
+# Value:     Maximum number of events to queue before dropping events.
+#            This is to prevent inundating your server with requests to Barricade under unusual traffic conditions.
+#            The default is tuned very high so as not to drop events most of the time, but you may need to change this
+#            depending on your traffic profile.
+#            If the logs contain warnings about the "high_water_mark" being passed, you may need to adjust this setting,
+#            or investigate if this seems like unusually high traffic.
+#
+# Default:   10000
+#
+# high_water_mark=10000

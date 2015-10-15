@@ -1,5 +1,9 @@
 # BOSH Release for barricade
 
+Install agent for https://barricade.io/
+
+**Note**: currently working for ubuntu stemcells
+
 ## Usage
 
 To use this bosh release, first upload it to your bosh:
@@ -14,14 +18,14 @@ bosh upload release releases/barricade-1.yml
 For [bosh-lite](https://github.com/cloudfoundry/bosh-lite), you can quickly create a deployment manifest & deploy a cluster:
 
 ```
-templates/make_manifest warden
+templates/make_manifest warden <barricade key>
 bosh -n deploy
 ```
 
 For AWS EC2, create a single VM:
 
 ```
-templates/make_manifest aws-ec2
+templates/make_manifest aws-ec2 <barricade key>
 bosh -n deploy
 ```
 

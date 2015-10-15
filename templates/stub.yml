@@ -6,6 +6,8 @@ meta:
     - barricade
   stemcell:
     name: STEMCELL
+  barricade:
+    key: BARRICADE_KEY
 
 director_uuid: PLACEHOLDER-DIRECTOR-UUID
 

@@ -6,10 +6,11 @@ template_prefix="barricade"
 STEMCELL_OS=${STEMCELL_OS:-ubuntu}
 
 infrastructure=$1
+BARRICADE_KEY=$2
 
 if [ "$infrastructure" != "aws-ec2" ] && \
     [ "$infrastructure" != "warden" ] ; then
-  echo "usage: ./make_manifest <aws-ec2|warden>"
+  echo "usage: ./make_manifest <aws-ec2|warden> <barricade-key>"
   exit 1
 fi
 
@@ -54,17 +55,21 @@ tmpdir=$release/tmp
 
 mkdir -p $tmpdir
 cp $templates/stub.yml $tmpdir/stub-with-uuid.yml
-echo $DIRECTOR_NAME $DIRECTOR_CPI $DIRECTOR_UUID $STEMCELL
+echo $DIRECTOR_NAME $DIRECTOR_CPI $DIRECTOR_UUID $STEMCELL $BARRICADE_KEY
 perl -pi -e "s/PLACEHOLDER-DIRECTOR-UUID/$DIRECTOR_UUID/g" $tmpdir/stub-with-uuid.yml
 perl -pi -e "s/NAME/$NAME/g" $tmpdir/stub-with-uuid.yml
 perl -pi -e "s/STEMCELL/$STEMCELL/g" $tmpdir/stub-with-uuid.yml
+perl -pi -e "s/BARRICADE_KEY/$BARRICADE_KEY/g" $tmpdir/stub-with-uuid.yml
 
-spiff merge \
+if ! [ -x "$(command -v spruce)" ]; then
+  echo 'spruce is not installed. Please download at https://github.com/geofffranks/spruce/releases' >&2
+fi
+
+spruce merge --prune meta \
   $templates/deployment.yml \
   $templates/jobs.yml \
   $templates/infrastructure-${infrastructure}.yml \
-  $tmpdir/stub-with-uuid.yml \
-  $* > $tmpdir/$NAME-manifest.yml
+  $tmpdir/stub-with-uuid.yml > $tmpdir/$NAME-manifest.yml
 
 bosh deployment $tmpdir/$NAME-manifest.yml
 bosh status

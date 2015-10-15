@@ -14,7 +14,7 @@ set -e # exit immediately if a simple command exits with a non-zero status
 set -u # report the usage of uninitialized variables
 
 JOB_NAME=$1
-output_label=${1:-JOB_NAME}
+output_label=${2:-${JOB_NAME}}
 
 export JOB_DIR=/var/vcap/jobs/$JOB_NAME
 chmod 755 $JOB_DIR # to access file via symlink
@@ -28,19 +28,6 @@ source $JOB_DIR/helpers/ctl_utils.sh
 redirect_output ${output_label}
 
 export HOME=${HOME:-/home/vcap}
-
-# Add all packages' /bin & /sbin into $PATH
-for package_bin_dir in $(ls -d /var/vcap/packages/*/*bin)
-do
-  export PATH=${package_bin_dir}:$PATH
-done
-
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-''} # default to empty
-for package_bin_dir in $(ls -d /var/vcap/packages/*/lib)
-do
-  export LD_LIBRARY_PATH=${package_bin_dir}:$LD_LIBRARY_PATH
-done
-
 # Setup log, run and tmp folders
 
 export RUN_DIR=/var/vcap/sys/run/$JOB_NAME
@@ -55,27 +42,11 @@ do
 done
 export TMPDIR=$TMP_DIR
 
-export C_INCLUDE_PATH=/var/vcap/packages/mysqlclient/include/mysql:/var/vcap/packages/sqlite/include:/var/vcap/packages/libpq/include
-export LIBRARY_PATH=/var/vcap/packages/mysqlclient/lib/mysql:/var/vcap/packages/sqlite/lib:/var/vcap/packages/libpq/lib
+PIDFILE=$RUN_DIR/$output_label.pid
 
-# consistent place for vendoring python libraries within package
-if [[ -d ${WEBAPP_DIR:-/xxxx} ]]
-then
-  export PYTHONPATH=$WEBAPP_DIR/vendor/lib/python
-fi
-
-if [[ -d /var/vcap/packages/java7 ]]
-then
-  export JAVA_HOME="/var/vcap/packages/java7"
-fi
-
-# setup CLASSPATH for all jars/ folders within packages
-export CLASSPATH=${CLASSPATH:-''} # default to empty
-for java_jar in $(ls -d /var/vcap/packages/*/*/*.jar)
-do
-  export CLASSPATH=${java_jar}:$CLASSPATH
-done
-
-PIDFILE=$RUN_DIR/$JOB_NAME.pid
-
+export BARRICADE_PIDFILE=$RUN_DIR/$output_label.pid
+export BARRICADE_CONFIG=/var/vcap/jobs/barricade/config/barricade.cfg
+export BARRICADE_LOGFILE=$LOG_DIR/barricade.log
+export BARRICADE_SSL_CA_BUNDLE=/var/vcap/packages/barricade/opt/barricade/agent/collector.crt
+export PATH=$PATH:/opt/barricade/embedded/bin
 echo '$PATH' $PATH

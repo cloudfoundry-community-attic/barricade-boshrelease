@@ -14,10 +14,18 @@ case $1 in
   start)
     pid_guard $PIDFILE $JOB_NAME
 
+    if [ ! -d "/opt/barricade" ]
+    then
+      cp -r /var/vcap/packages/barricade/opt/barricade /opt/barricade
+    fi
+    if [ ! -f "/var/vcap/store/barricade/id" ]
+    then
+      barricade-register
+    fi
+
     # store pid in $PIDFILE
     echo $$ > $PIDFILE
-
-    exec chpst -u vcap:vcap barricade \
+    exec barricade-agent \
          >>$LOG_DIR/$JOB_NAME.stdout.log \
          2>>$LOG_DIR/$JOB_NAME.stderr.log
 
