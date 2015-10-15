@@ -1,0 +1,5 @@
+check process barricade
+  with pidfile /var/vcap/sys/run/barricade/barricade.pid
+  start program "/var/vcap/jobs/barricade/bin/monit_debugger barricade_ctl '/var/vcap/jobs/barricade/bin/barricade_ctl start'"
+  stop program "/var/vcap/jobs/barricade/bin/monit_debugger barricade_ctl '/var/vcap/jobs/barricade/bin/barricade_ctl stop'"
+  group vcap
