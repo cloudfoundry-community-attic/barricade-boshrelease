@@ -1,0 +1,20 @@
+---
+packages:
+- name: barricade
+  version: 8c61a63bd12b9e8c02d23bbfbf1f49c9d6999d9a
+  fingerprint: 8c61a63bd12b9e8c02d23bbfbf1f49c9d6999d9a
+  sha1: 7e0e893c1a062b6dfbcfaadd277408568dee78d3
+  dependencies: []
+jobs:
+- name: barricade
+  version: 74b409632127da37a8a23e5aaa843280f55aee82
+  fingerprint: 74b409632127da37a8a23e5aaa843280f55aee82
+  sha1: 73a6ccdd090ccada406bd8375f32a28dbd80589a
+license:
+  version: 79267db2e7516e504dfe773afdfd03a5ecfaf43a
+  fingerprint: 79267db2e7516e504dfe773afdfd03a5ecfaf43a
+  sha1: d411dc2796fd226ad1dd29a14cd798d6a2a26643
+commit_hash: a8fa2ab7
+uncommitted_changes: true
+name: barricade
+version: '1'
