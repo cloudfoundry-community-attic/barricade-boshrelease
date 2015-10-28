@@ -77,4 +77,3 @@ By default the version number will be bumped to the next major number. You can s
 bosh create release --final --version 2.1
 ```
 
-After the first release you need to contact [Dmitriy Kalinin](mailto://dkalinin@pivotal.io) to request your project is added to https://bosh.io/releases (as mentioned in README above).
